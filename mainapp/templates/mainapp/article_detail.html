@@ -1,0 +1,362 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+
+{% block js %}
+    {{ block.super }}
+    <script src="{% static 'js/like_scripts.js' %}"></script>
+{% endblock %}
+
+{% block title %}
+    Статья
+{% endblock %}
+
+{% block menu %}
+    {% include 'mainapp/inc_main_menu.html' %}
+{% endblock %}
+
+{% block content %}
+
+    <hr>
+    <h1>{{ object.title }}</h1>
+    <hr>
+
+    <p>{{ object.content|linebreaks }}</p>
+
+    <br>
+    {% if user.is_authenticated %}
+        {% if like_active == 0 %}
+
+            <div class="col-3 float-right like-article">
+                <button class="like-articles" type="submit"
+                        data-pk="{{ object.pk }}"
+                        value="{{ likes }}">
+                    {% include 'likeapp/like_article.html' %}
+                </button>
+            </div>
+
+        {% else %}
+
+            <div class="col-3 float-right like-article text-danger">
+                <button class="like-articles" type="submit"
+                        data-pk="{{ object.pk }}"
+                        value="{{ likes }}">
+                    {% include 'likeapp/like_article.html' %}
+                </button>
+            </div>
+
+        {% endif %}
+    {% else %}
+
+        {% comment %}
+        <div class="col-3 float-right">
+            <a href="{% url 'auth:login' %}">
+                {% include 'likeapp/like_article.html' %}
+            </a>
+        </div>
+        {% endcomment %}
+        <div class="col-3 float-right">
+            <a href="#zatemnenie">
+                {% include 'likeapp/like_article.html' %}
+            </a>
+        </div>
+        <div id="zatemnenie">
+            <window>
+                <a href="#close_window" class="close_window_right" style="text-align: right;
+                    display: block; margin: 0;">&#10008;</a> <br>
+                <p style="margin: 0;">Действие доступно только зарегистрированному пользователю </p> <br>
+                <a href="{% url 'auth:login' %}" class="">Войти</a>
+                <a href="{% url 'auth:register' %}" class="pull-right">Зарегистрироваться</a>
+            </window>
+        </div>
+
+    {% endif %}
+
+    <div class="row">
+        теги:
+        <div class="col-6 align-left">
+            {% for tag in tags_for_article %}
+                <a href="{% url 'mainapp:articles_for_tag_list' pk=tag.pk %}">
+                    {{ tag.name }}<br>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <br>
+    <span>Автор:</span>
+    {% if like_active_user == 0 %}
+        {% if object.user.last_name and object.user.first_name %}
+            {{ object.user.first_name }} {{ object.user.last_name }}
+            {% if object.user.banned == none %}
+                {% if user.is_staff %}<a class="btn-link"
+                                         href="{% url 'auth:ban_user' object.user_id object.id %}">BAN</a>
+                {% endif %}
+            {% else %}
+                {% if user.is_staff %}<span class="text-danger">BAN</span>
+                {% endif %}
+            {% endif %}
+            {% if user.is_authenticated %}
+                <div class="like-user col-8 float-right">
+                    <button class="like-users" type="submit"
+                            data-pk="{{ object.user_id }}"
+                            value="{{ likes_user }}">
+                        {% include 'likeapp/like_user.html' %}
+                    </button>
+                </div>
+            {% else %}
+                <div class="like-user col-8 float-right">
+                    <a href="#zatemnenie">
+                        {% include 'likeapp/like_user.html' %}
+                    </a>
+                </div>
+            {% endif %}
+        {% else %}
+            {{ object.user.username }}
+            {% if object.user.banned == none %}
+                {% if user.is_staff %}<a class="btn-link"
+                                         href="{% url 'auth:ban_user' object.user_id object.id %}">BAN</a>
+                {% endif %}
+            {% else %}
+                {% if user.is_staff %}<span class="text-danger">BAN</span>
+                {% endif %}
+            {% endif %}
+
+            {% comment %}
+            <div class="like-user col-8 float-right">
+                <button class="like-users" type="submit"
+                        data-pk="{{ object.user_id }}"
+                        value="{{ likes_user }}">
+                    {% include 'likeapp/like_user.html' %}
+                </button>
+            </div>
+            {% endcomment %}
+            {% if user.is_authenticated %}
+                <div class="like-user col-8 float-right">
+                    <button class="like-users" type="submit"
+                            data-pk="{{ object.user_id }}"
+                            value="{{ likes_user }}">
+                        {% include 'likeapp/like_user.html' %}
+                    </button>
+                </div>
+            {% else %}
+                <div class="like-user col-8 float-right">
+                    <a href="#zatemnenie">
+                        {% include 'likeapp/like_user.html' %}
+                    </a>
+                </div>
+            {% endif %}
+
+        {% endif %}
+    {% else %}
+        {% if object.user.last_name and object.user.first_name %}
+            {{ object.user.first_name }} {{ object.user.last_name }}
+            {% if object.user.banned == none %}
+                {% if user.is_staff %}<a class="btn-link"
+                                         href="{% url 'auth:ban_user' object.user_id object.id %}">BAN</a>
+                {% endif %}
+            {% else %}
+                {% if user.is_staff %}<span class="text-danger">BAN</span>
+                {% endif %}
+            {% endif %}
+            <div class="like-user text-danger col-8 float-right">
+                <button class="like-users" type="submit"
+                        data-pk="{{ object.user_id }}"
+                        value="{{ likes_user }}">
+                    {% include 'likeapp/like_user.html' %}
+                </button>
+            </div>
+        {% else %}
+            {{ object.user.username }}
+            {% if object.user.banned == none %}
+                {% if user.is_staff %}<a class="btn-link"
+                                         href="{% url 'auth:ban_user' object.user_id object.id %}">BAN</a>
+                {% endif %}
+            {% else %}
+                {% if user.is_staff %}<span class="text-danger">BAN</span>
+                {% endif %}
+            {% endif %}
+            {% comment %}
+            <div class="like-user text-danger col-8 float-right">
+                <button class="like-users text-danger" type="submit"
+                        data-pk="{{ object.user_id }}"
+                        value="{{ likes_user }}">
+                    {% include 'likeapp/like_user.html' %}
+                </button>-->
+            </div>-->
+            {% endcomment %}
+            {% if user.is_authenticated %}
+                <div class="like-user col-8 float-right">
+                    <button class="like-users" type="submit"
+                            data-pk="{{ object.user_id }}"
+                            value="{{ likes_user }}">
+                        {% include 'likeapp/like_user.html' %}
+                    </button>
+                </div>
+            {% else %}
+                <div class="like-user col-8 float-right">
+                    <a href="#zatemnenie">
+                        {% include 'likeapp/like_user.html' %}
+                    </a>
+                </div>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+    <p>Создано: {{ object.created|date:"d-E-Y P" }}</p>
+    <p>Изменено: {{ object.edited|date:"d-E-Y P" }}</p>
+
+    {% if object.is_reviewing %}
+        <p>Статус: На модерации</p>
+    {% elif not object.is_rejected and not object.is_reviewing and not object.is_published %}
+        <p>Статус: Черновик</p>
+    {% endif %}
+
+    {% if object.reject_comment %}
+        <p>Причина отклонения: {{ object.reject_comment }}</p>
+        <a class="btn btn-link" href="{% url 'cabinet:my_drafts' %}">В
+            черновики</a>
+    {% endif %}
+
+    <hr>
+    {% if object.is_published %}
+
+        <h4>
+            Количество комментариев: {{ total_comments }}
+        </h4>
+
+        {# Выведем все комментарии к статье #}
+        {% for comment in comments %}
+
+            <hr>
+
+            <div>
+                <p>
+                    Комментарий от {{ comment.user }}
+                    {% if user.is_staff %}
+                        {% if comment.user.banned == none %}
+                            <a class="btn-link"
+                               href="{% url 'auth:ban_user' comment.user_id object.id %}">BAN</a>
+                        {% else %}
+                            <span class="text-danger">BAN</span>
+                        {% endif %}
+                    {% endif %}
+                    ({{ comment.created }}
+                    {% if comment.edited > comment.created %}
+                        - изменен {{ comment.edited }}
+                    {% endif %}
+                    )
+                </p>
+
+                {% if comment.comment_to %}
+                    <p>
+                        в ответ на комментарий от {{ comment.comment_to.user }}
+                        ({{ comment.comment_to.created }})
+                    </p>
+                {% endif %}
+
+                {{ comment.content|linebreaks }}
+                <br>
+
+                {% if not comment.comment_level_1 and comment.answers_count > 0 and comment.pk != comment_for_answers %}
+                    <a href="{% url 'mainapp:article_detail_comment_answers' pk=object.pk comment_to=comment.pk %}">Развернуть</a>
+                    ({{ comment.answers_count }})
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                    {% if not user.banned %}
+                        <a href="{% url 'commentapp:comment_new' pk=comment.pk %}">Ответить</a>
+                        {% if user == comment.user %}
+                            <a href="{% url 'commentapp:comment_edit' pk=comment.pk %}">Изменить</a>
+                        {% endif %}
+                        {% if user == comment.user or user.is_staff %}
+                            <a href="{% url 'commentapp:comment_delete' pk=comment.pk %}">Удалить</a>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            </div>
+
+            {% if comment.pk == comment_for_answers %}
+                {# Если выбран режим просмотра ответов к комментарию то выводим ответы #}
+                {# здесь практически продублирован код для вывода обычного комментария #}
+
+                {% for answer in answers_for_comment %}
+
+                    <hr>
+                    {# Если комментарий второго уровня (ответ) то у него специальный класс со смещением #}
+                    <div class="div_article_comment_2">
+                        <p>
+                            Комментарий от {{ answer.user }}
+                            {% if answer.user.banned == none %}
+                                {% if user.is_staff %}<a class="btn-link"
+                                                         href="{% url 'auth:ban_user' answer.user_id object.id %}">BAN</a>
+                                {% endif %}
+                            {% else %}
+                                <span class="text-danger">BAN</span>
+                            {% endif %}
+                            ({{ answer.created }}
+                            {% if answer.edited > answer.created %}
+                                - изменен {{ answer.edited }}
+                            {% endif %}
+                            )
+                        </p>
+
+                        {% if answer.comment_to %}
+                            <p>
+                                в ответ на комментарий
+                                от {{ answer.comment_to.user }}
+                                ({{ answer.comment_to.created }})
+                            </p>
+                        {% endif %}
+
+                        {{ answer.content|linebreaks }}
+                        <br>
+
+                        {% if user.is_authenticated %}
+                            {% if not user.banned %}
+                                <a href="{% url 'commentapp:comment_new' pk=answer.pk %}">Ответить</a>
+                                {% if user == answer.user %}
+                                    <a href="{% url 'commentapp:comment_edit' pk=answer.pk %}">Изменить</a>
+                                {% endif %}
+                                {% if user == comment.user or user.is_staff %}
+                                    <a href="{% url 'commentapp:comment_delete' pk=answer.pk %}">Удалить</a>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% empty %}
+            <p>Пока комментариев нет</p>
+        {% endfor %}
+
+        {% if new_comment %}
+            <h4>Ваш комментарий был добавлен</h4>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+            {% if not user.banned %}
+                <h4>Напишите ваш комментарий:</h4>
+
+                <form action="." method="post">
+                    {{ comment_form.as_p }}
+                    {% csrf_token %}
+                    <p><input type="submit" value="Добавить"></p>
+                </form>
+            {% endif %}
+        {% else %}
+            <h4>Комментарии могут добавлять только авторизированные
+                пользователи </h4>
+        {% endif %}
+    {% endif %}
+
+    {% if user.is_staff and object.is_reviewing %}
+        {% include 'cabinetapp/moderation.html' %}
+    {% endif %}
+
+    {% if user.is_staff and object.is_published %}
+        {% include 'cabinetapp/moderation.html' %}
+    {% endif %}
+
+{% endblock %}

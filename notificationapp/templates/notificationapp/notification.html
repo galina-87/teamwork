@@ -1,0 +1,153 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+
+{% block js %}
+    {{ block.super }}
+    <script src="{% static 'js/notification_scripts.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <section>
+
+        <div class="itemListCategory">
+
+            <div>
+                <h1>уведомления</h1>
+            </div>
+
+            <div class="container">
+                <div class="row size-100">
+
+                    <div class="col-9">
+
+                        <div>
+                            <h5 class="align-right">
+                                {% if user.is_superuser %}
+                                    <p>{{ user }} (администратор)</p>
+                                {% elif user.is_staff %}
+                                    <p>{{ user }} (модератор)</p>
+                                {% else %}
+                                    <p>{{ user }}</p>
+                                {% endif %}
+                            </h5>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br><br>
+        <div class="row">
+            {% include 'cabinetapp/inc_menu.html' %}
+            <div class="col-8">
+                {% if notifications %}
+                    {% for notification in notifications %}
+                        <div class="row pb-3" id="n{{ notification.id }}">
+                            <div class="col-12 table-bordered">
+                                <p class="">
+
+                                    {% if notification.content == 'лайк юзер' %}
+                                        <p class="center">Вам поставил лайк
+                                            <span class="text-danger">❤</span>
+                                            - {{ notification.user_from }}</p>
+
+                                    {% elif notification.content == '@moderator' %}
+                                        <p>В статье <a
+                                                href="{% url 'mainapp:article_detail' notification.article.id %}">"{{ notification.article }}"</a>
+                                            - жалоба!</p>
+                                        <p>Комментарий
+                                            "{{ notification.comment }}"</p>
+
+                                    {% elif notification.content == 'day' %}
+                                        <p class="text-danger center">
+                                            ❗ {{ user|title }}, ваша учетная
+                                            запись заблокирована на 1 день
+                                            ❗</p>
+                                    {% elif notification.content == 'week' %}
+                                        <p class="text-danger center">
+                                            ❗ {{ user|title }}, ваша учетная
+                                            запись заблокирована на 2 недели
+                                            ❗</p>
+                                    {% else %}
+                                        <span class="g-bold">Ваша статья:</span>
+
+                                        {% if notification.content != 'статья удалена' %}
+                                            <span>
+                                            <a class="text-success cancel-link"
+                                               href="{% url 'mainapp:article_detail' pk=notification.article.id %}">
+                                    "{{ notification.article.title }}"</a>
+                                        {% else %}
+                                            "
+                                            <span>{{ notification.article.title }}"</span>
+                                        {% endif %}
+
+                                    - </span>
+                                        {% if notification.content == 'одобрено' %}
+                                            <span class="text-success">опубликована на сайт</span>
+                                        {% elif notification.content == 'статья удалена' %}
+                                            <span class="text-danger">была
+                                    удалена с сайта</span>
+                                        {% elif notification.content == 'комментарий' %}
+                                            <span>Добавлен комментарий</span>
+                                        {% elif notification.content == 'лайк статья' %}
+                                            <span class="text-danger">Поставил лайк ❤</span>
+                                            <span>- {{ notification.user_from }}</span>
+                                        {% else %}
+                                            <span class="text-danger">была
+                                    отклонена в публикации</span>{% endif %}
+
+                                    {% endif %}
+                                <div>
+                                    {% if notification.closed %}
+                                        <div class="">
+                                            <input class="float-left btn-mini btn-success"
+                                                   type="reset"
+                                                   name="button"
+                                                   value="Прочитано">
+                                        </div>
+                                    {% else %}
+                                        <div class="edit-button">
+                                            <input class="edit-buttons float-left btn-mini btn-info"
+                                                   type="submit"
+                                                   name="view"
+                                                   id="{{ notification.id }}"
+                                                   data-pk="{{ notification.id }}"
+                                                   value="Пометить как прочитано">
+                                        </div>
+                                    {% endif %}
+                                    <div class="delete-button">
+                                        <input class="delete-buttons float-right btn-mini btn-danger"
+                                               type="submit" name="delete"
+                                               id="{{ notification.id }}"
+                                               data-pk="{{ notification.id }}"
+                                               value="Удалить">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>У вас нет уведомлений</p>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-12">
+                <a class="btn float-right btn-inverse"
+                   href="{% url 'cabinet:cabinet' %}">
+                    Личный кабинет
+                </a>
+            </div>
+        </div>
+
+
+    </section>
+{% endblock %}
+
+{% block menu %}
+    {% include 'mainapp/inc_main_menu.html' %}
+{% endblock %}

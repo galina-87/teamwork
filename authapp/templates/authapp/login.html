@@ -1,0 +1,17 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+
+{% block content %}
+    {% include 'mainapp/inc_main_menu.html' %}
+
+    <form class="form-horizontal size-90" action="{% url 'auth:login' %}"
+          method="post">
+        {% csrf_token %}
+        {{ login_form.as_p }}
+        <br>
+        <input class="btn-inverse form-control" type="submit" value="Войти">
+        <a class="float-right" type="submit"
+           href="{% url 'auth:register' %}">Нет учетной записи?</a>
+    </form>
+
+{% endblock %}

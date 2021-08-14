@@ -1,0 +1,62 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+
+
+{% block content %}
+    <div class="row">
+
+        <div class="col-2">
+
+        </div>
+
+        <div class="col-8 g-bold">
+            {% if user.first_name %}
+                {{ user.first_name }},
+            {% else %}
+                {{ user|title }},
+            {% endif %} вы уверены что хотите удалить статью?
+            <br><br>
+            <form action="{% url 'cabinet:delete_article' article.id %}"
+                  method="post">
+                {% csrf_token %}
+
+                <div class="row">
+                    <div class="col-6">
+                        <input class="btn btn-danger" type="submit"
+                               value="Удалить">
+                    </div>
+                    {% if user.is_staff %}
+
+                        <div class="col-4">
+                            <button class="btn btn-inverse">
+                                <a class=""
+                                   href="#" onclick="history.back();">
+                                    Отмена
+                                </a>
+                            </button>
+                        </div>
+
+                    {% elif user.is_authenticated %}
+
+                        <div class="col-4">
+                            <button class="btn btn-inverse">
+                                <a class=""
+                                   href="#" onclick="history.back();">
+                                    Отмена
+                                </a>
+                            </button>
+                        </div>
+
+                    {% endif %}
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block menu %}
+    {% include 'mainapp/inc_main_menu.html' %}
+{% endblock %}

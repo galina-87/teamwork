@@ -1,0 +1,120 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+
+{% block content %}
+    <section>
+
+        <div class="itemListCategory">
+
+            <div>
+                <h1>личный кабинет</h1>
+            </div>
+
+            <div class="container">
+                <div class="row size-100">
+                    <div class="col-md-3">
+                        <img src="/media/{{ avatar }}"
+                             class="img-fluid img-circle" alt=" "
+                             style="height: 150px; width: 150px">
+                    </div>
+
+                    <div class="col-md-9">
+
+                        <div>
+                            <h5>
+                                {% if user.is_superuser %}
+                                    <p>{{ user }} (администратор)</p>
+                                {% elif user.is_staff %}
+                                    <p>{{ user }} (модератор)</p>
+                                {% else %}
+                                    {% if user.banned %}
+                                        <p class="text-danger">{{ user }}</p>
+                                        <small class="text-danger">Заблокирован
+                                            до {{ user.banned }}</small>
+                                    {% else %}
+                                        <p>{{ user }}</p>
+                                    {% endif %}
+                                {% endif %}
+
+                                <small class="g-notexttransform float-left">Рейтинг: {{ rating }}</small>
+
+                                <br>
+
+                            </h5>
+                        </div>
+
+                        <div class="align-left small g-notexttransform">
+                            О себе:
+                        </div>
+
+                        <div class="table-bordered">
+                            {% if about_me %}
+                                <p class="small text-left g-notexttransform">{{ about_me }}</p>
+                            {% else %}
+                                <a class="small float-left text-error g-notexttransform"
+                                   href="{% url 'auth:edit' %}">добавить</a>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br><br>
+        <div class="row">
+            {% include 'cabinetapp/inc_menu.html' %}
+            <div class="col-6">
+
+                {% if first_name %}
+                    <div>Имя: <span
+                            class="g-bold">{{ first_name|title }}</span></div>
+                {% else %}
+                    <div>Имя: <a class="small text-error g-notexttransform"
+                                 href="{% url 'auth:edit' %}">добавить</a>
+                {% endif %}
+
+                {% if last_name %}
+                    <div>Фамилия: <span
+                            class="g-bold">{{ last_name|title }}</span></div>
+                {% else %}
+                    <div>Фамилия: <a class="small text-error g-notexttransform"
+                                     href="{% url 'auth:edit' %}">добавить</a>
+                {% endif %}
+
+                {% if email %}
+                    <div>E-mail: <span class="g-bold">{{ email }}</span></div>
+                {% else %}
+                    <div>E-mail: <a class="small text-error g-notexttransform"
+                                    href="{% url 'auth:edit' %}">добавить</a>
+                {% endif %}
+
+                <br><br>
+
+                {% if gender %}
+                    <div>Пол: <span class="g-bold">{{ gender }}</span></div>
+                {% else %}
+                    <div>Пол: <a class="small text-error g-notexttransform"
+                                 href="{% url 'auth:edit' %}">добавить</a>
+                    </div>
+                {% endif %}
+
+
+                {% if birth_date %}
+                    <div>Дата рождения: <span
+                            class="g-bold">{{ birth_date }}</span></div>
+                {% else %}
+                    <div>Дата рождения: <a
+                            class="small text-error g-notexttransform"
+                            href="{% url 'auth:edit' %}">добавить</a>
+                    </div>
+                {% endif %}
+
+                </div>
+                </div>
+
+    </section>
+{% endblock %}
+
+{% block menu %}
+    {% include 'mainapp/inc_main_menu.html' %}
+{% endblock %}

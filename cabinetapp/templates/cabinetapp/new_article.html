@@ -1,0 +1,129 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+
+
+{% block content %}
+    {% if request.resolver_match.url_name == 'edit_draft' %}
+        <h1 class="center">Редактирование черновика статьи</h1>
+    {% elif request.resolver_match.url_name == 'new_article' %}
+        <h1 class="center">Создание новой статьи</h1>
+    {% endif %}
+    <div class="row">
+
+        <div class="col-1"></div>
+
+        <div class="col-10 g-bold">
+
+            {% if request.resolver_match.url_name == 'new_article' %}
+                <form action="{% url 'cabinet:new_article' %}" method="post">
+            {% else %}
+                <form action="{% url 'cabinet:edit_draft' article.id %}"
+                      method="post">
+            {% endif %}
+            {% csrf_token %}
+            <div class="row">
+
+                <div class="col-12">
+                    <small>Название статьи</small>
+                    {{ form.title }}
+                </div>
+
+                <div class="col-12">
+                    <small>Статья</small>
+                    {{ form.content }}
+                </div>
+
+                <div class="col-6">
+                    <small>Раздел</small>
+                    {{ form.sections }}
+                </div>
+
+                <div class="col-6">
+                    <small>Тэги</small>
+                    {{ form.tags }}
+                </div>
+
+            </div>
+
+
+            <div class="row">
+                {% if request.resolver_match.url_name == 'new_article' %}
+
+                    <div class="col-4 center">
+                        <button class="btn btn-success" type="submit"
+                                value="save" name="save">Опубликовать
+                        </button>
+                    </div>
+
+                    <div class="col-4 center">
+                        <button class="btn btn-danger" type="submit"
+                                value="draft" name="draft">В черновик
+                        </button>
+                    </div>
+
+                    <div class="col-4 center">
+                        <button class="btn btn-inverse">
+                            <a class="" href="#" onclick="history.back();">
+                                Отмена
+                            </a>
+                        </button>
+                    </div>
+
+                {% elif request.resolver_match.url_name == 'edit_draft' and article_published == None %}
+
+                    {% if user.banned %}
+                        <div class="col-4 center">
+                            <span class="btn btn-danger">
+                                Опубликовать
+                            </span>
+                        </div>
+                    {% else %}
+                        <div class="col-4 center">
+                            <button class="btn btn-success" type="submit"
+                                    value="save" name="save">Опубликовать
+                            </button>
+                        </div>
+                    {% endif %}
+
+                    <div class="col-4 center">
+                        <button class="btn btn-danger" type="submit"
+                                value="draft" name="draft">Сохранить
+                        </button>
+                    </div>
+
+                    <div class="col-4 center">
+                        <button class="btn btn-inverse">
+                            <a class="" href="#" onclick="history.back();">
+                                Отмена
+                            </a>
+                        </button>
+                    </div>
+
+                {% elif request.resolver_match.url_name == 'edit_draft' and article_published %}
+
+                    <div class="col-6 center">
+                        <button class="btn btn-danger" type="submit"
+                                value="draft" name="draft">В черновик
+                        </button>
+                    </div>
+
+                    <div class="col-6 center">
+                        <button class="btn btn-inverse">
+                            <a class="" href="#" onclick="history.back();">
+                                Отмена
+                            </a>
+                        </button>
+                    </div>
+
+                {% endif %}
+            </div>
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block menu %}
+    {% include 'mainapp/inc_main_menu.html' %}
+{% endblock %}

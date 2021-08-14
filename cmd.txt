@@ -1,0 +1,19 @@
+# Создать и запустить миграции
+python manage.py makemigrations
+python manage.py migrate
+######################################
+# Создать суперпользователя
+python manage.py createsuperuser
+######################################
+# Собрать статику
+python manage.py collectstatic
+######################################
+# Запускаем тесты
+python manage.py test
+######################################
+# Запускаем проект
+python manage.py runserver
+######################################
+# Первоначальное заполнение поля comment.comment_level_1 на основании других полей таблицы comment
+python manage.py init_comment_level_1
+######################################

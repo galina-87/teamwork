@@ -1,0 +1,105 @@
+{% load static %}
+
+<div class="g-grid col-3">
+
+    <div class="g-block size-100 align-left">
+        <nav class="g-main-nav">
+            <ul>
+                {% if user.banned %}
+                    <li>
+                        <span class="">
+                            <span class="g-menu-item-title g-bold text-danger">Новая статья</span>
+                        </span>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="{% url 'cabinet:new_article' %}">
+                            <span class="">
+                                <span class="g-menu-item-title g-bold">Новая статья</span>
+                            </span>
+                        </a>
+                    </li>
+                {% endif %}
+
+                <li>
+                    <a href="{% url 'cabinet:my_articles' %}">
+                            <span class="g-menu-item-content">
+                                <span class="g-menu-item-title g-bold">Мои статьи</span>
+                            </span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'cabinet:my_drafts' %}">
+                        <span class="g-menu-item-content">
+                            <span class="g-menu-item-title g-bold">Черновики
+                                {% if score_article_draft != 0 %}
+                                    ({{ score_article_draft }})
+                                {% endif %}
+                            </span>
+                        </span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'auth:edit' %}">
+                        <span class="g-menu-item-content">
+                            <span class="g-menu-item-title g-bold {% if request.resolver_match.url_name == 'edit' %}text-dark{% endif %}">Изменить профиль</span>
+                        </span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'notification:notification' %}">
+                        <span class="g-menu-item-content">
+                            <span class="g-menu-item-title g-bold {% if request.resolver_match.url_name == 'notification' %}text-dark{% endif %}">
+                                Уведомления
+                                {% if notification != 0 %}
+                                    ({{ notification }}){% endif %}
+                            </span>
+                        </span>
+                    </a>
+                </li>
+
+                {% if user.is_staff %}
+                    <li>
+                        <a href="{% url 'cabinet:moderation' %}">
+                            <span class="g-menu-item-content">
+                                <span class="g-menu-item-title g-bold">
+                                    Модерация
+                                    {% if score_article != 0 %}
+                                        ({{ score_article }}){% endif %}</span>
+                            </span>
+                        </a>
+                    </li>
+
+                {% else %}
+
+                    <li>
+                        <a href="{% url 'cabinet:moderation' %}">
+                            <span class="g-menu-item-content">
+                                <span class="g-menu-item-title g-bold">
+                                    На модерации
+                                    {% if score_article != 0 %}
+                                        ({{ score_article }}){% endif %}</span>
+                            </span>
+                        </a>
+                    </li>
+
+                {% endif %}
+
+                {% if user.is_superuser %}
+                    <li>
+                        <a href="{% url 'admin:index' %}">
+                            <span class="g-menu-item-content">
+                                <span class="g-menu-item-title g-bold">Админка</span>
+                            </span>
+                        </a>
+                    </li>
+                {% endif %}
+
+            </ul>
+        </nav>
+    </div>
+
+</div>
